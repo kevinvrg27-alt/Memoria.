@@ -1,8 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Download, ChevronLeft, ChevronRight, Heart, Stars, Moon } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Heart, Stars, Moon, Music, Pause, Play } from 'lucide-react';
 
 // --- Components ---
+
+const MusicPlayer = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      <audio
+        ref={audioRef}
+        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Placeholder for Monolog, user can replace with actual link
+        loop
+      />
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={togglePlay}
+        className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-xl border border-white/20 shadow-2xl transition-all group"
+      >
+        <div className={`p-2 rounded-full ${isPlaying ? 'bg-yellow-400 text-black animate-pulse' : 'bg-white/10 text-white'}`}>
+          {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+        </div>
+        <div className="flex flex-col items-start pr-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-yellow-200">Now Playing</span>
+          <span className="text-sm font-medium">Monolog - Pamungkas</span>
+        </div>
+        <Music className={`text-yellow-200 ${isPlaying ? 'animate-bounce' : ''}`} size={18} />
+      </motion.button>
+    </div>
+  );
+};
 
 const StarryBackground = () => {
   const [stars, setStars] = useState<{ id: number; x: number; y: number; size: number; duration: number }[]>([]);
@@ -128,34 +169,79 @@ const memories = [
   {
     id: 1,
     url: "https://i.ibb.co.com/xS2g5KwH/Gemini-Generated-Image-632a02632a02632a.png",
-    title: "Momen 1",
-    desc: "Awal dari segalanya, tawa yang tak pernah pudar."
+    title: "Awal Cerita Kita",
+    desc: "Di mana tawa pertama pecah dan janji persahabatan terukir di antara bintang."
   },
   {
     id: 2,
     url: "https://i.ibb.co.com/7JkYJJtP/Gemini-Generated-Image-r12yz0r12yz0r12y.png",
-    title: "Momen 2",
-    desc: "Kebersamaan yang membuat hari-hari lebih berwarna."
+    title: "Warna Kebersamaan",
+    desc: "Setiap detik bersamamu adalah pelangi yang menghiasi langit kelam hidupku."
   },
   {
     id: 3,
     url: "https://i.ibb.co.com/ZpPZP5Cx/Gemini-Generated-Image-vrddavvrddavvrdd.png",
-    title: "Momen 3",
-    desc: "Cerita-cerita kecil yang akan kita kenang selamanya."
+    title: "Saksi Bisu Waktu",
+    desc: "Bukan tentang seberapa lama kita kenal, tapi tentang seberapa dalam kita berbagi."
   },
   {
     id: 4,
     url: "https://i.ibb.co.com/cXKK4z2c/Gemini-Generated-Image-a2yxufa2yxufa2yx.png",
-    title: "Momen 4",
-    desc: "Melewati rintangan bersama, menguatkan ikatan kita."
+    title: "Melampaui Badai",
+    desc: "Rintangan hanyalah cara semesta menguji seberapa kuat kita berpegangan tangan."
   },
   {
     id: 5,
     url: "https://i.ibb.co.com/sdYJwccX/Gemini-Generated-Image-us3bjtus3bjtus3b.png",
-    title: "Momen 5",
-    desc: "Janji untuk selalu ada, apa pun yang terjadi."
+    title: "Abadi Dalam Doa",
+    desc: "Meski raga mungkin menjauh, namun jiwa kita akan selalu berpelukan dalam memori."
   }
 ];
+
+const ConstellationHeart = () => {
+  const points = [
+    { x: 50, y: 30 }, { x: 35, y: 20 }, { x: 20, y: 30 }, { x: 20, y: 50 },
+    { x: 50, y: 85 }, { x: 80, y: 50 }, { x: 80, y: 30 }, { x: 65, y: 20 },
+  ];
+
+  return (
+    <div className="relative w-64 h-64 mx-auto">
+      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+        <motion.path
+          d="M 50 30 Q 35 10 20 30 Q 5 50 50 85 Q 95 50 80 30 Q 65 10 50 30"
+          fill="none"
+          stroke="rgba(254, 249, 195, 0.3)"
+          strokeWidth="0.5"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          transition={{ duration: 3, ease: "easeInOut" }}
+        />
+        {points.map((p, i) => (
+          <motion.circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r="1"
+            fill="#fef9c3"
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.2, duration: 0.5 }}
+          >
+            <animate attributeName="r" values="1;1.5;1" dur="2s" repeatCount="indefinite" />
+          </motion.circle>
+        ))}
+      </svg>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 2, duration: 2 }}
+        className="absolute inset-0 flex items-center justify-center"
+      >
+        <Heart className="text-yellow-200/20 w-32 h-32 blur-xl" />
+      </motion.div>
+    </div>
+  );
+};
 
 const MemoryGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -267,6 +353,7 @@ export default function App() {
   return (
     <div className="min-h-screen text-white font-sans selection:bg-yellow-200 selection:text-black">
       <StarryBackground />
+      <MusicPlayer />
 
       <main className="relative z-10">
         {/* Hero Section */}
@@ -328,12 +415,42 @@ export default function App() {
               Our Memories
             </motion.div>
             <h2 className="text-3xl md:text-5xl font-bold mb-4">Setiap Detik Berharga</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Kumpulan momen indah yang telah kita lalui bersama. Mari kita jaga agar kenangan ini tetap abadi.
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto italic">
+              "Persahabatan bukanlah tentang siapa yang kau kenal paling lama, tapi tentang siapa yang datang dan tak pernah pergi."
             </p>
           </div>
 
           <MemoryGallery />
+        </section>
+
+        {/* Closing Section */}
+        <section className="py-32 px-4 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <ConstellationHeart />
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="mt-12 space-y-8"
+            >
+              <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-100 to-white">
+                Selamanya, Kita.
+              </h2>
+              <div className="space-y-4 text-gray-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto">
+                <p>
+                  Dunia mungkin berubah, musim mungkin berganti, dan jarak mungkin membentang. 
+                  Namun dalam setiap detak jantung dan hembusan nafas, namamu akan selalu ada sebagai bagian dari cerita terindahku.
+                </p>
+                <p className="text-yellow-200/80 font-medium">
+                  Terima kasih telah menjadi alasan di balik senyumku hari ini.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+          
+          {/* Background Glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/5 blur-[120px] rounded-full pointer-events-none" />
         </section>
 
         {/* Footer */}
