@@ -23,7 +23,7 @@ const MusicPlayer = () => {
     <div className="fixed bottom-6 right-6 z-50">
       <audio
         ref={audioRef}
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Placeholder for Monolog, user can replace with actual link
+        src="https://lively-copper-8qv4yel8cx.edgeone.app/Pamungkas%20-%20Monolog%20Lyrics%20Video.mp3"
         loop
       />
       <motion.button
